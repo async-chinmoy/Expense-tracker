@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js'; 
+import validator from 'validator';
 
 export const registerHandler = async (req, res) => {
   try {
@@ -7,6 +8,9 @@ export const registerHandler = async (req, res) => {
 
     if (!email || !password || !username) {
       return res.status(400).json({ error: 'Email, password, and username are required.' });
+    }
+    if (!validator.isEmail(email)) {
+      return res.status(400).json({ error: 'Invalid email format.' });
     }
 
     const existingUser = await User.findOne({ email });
@@ -48,6 +52,9 @@ export const loginHandler = async (req, res) => {
       return res.status(400).json({ error: 'Email and password are required.' });
     }
 
+    if (!validator.isEmail(email)) {
+      return res.status(400).json({ error: 'Invalid email format.' });
+    }
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ error: 'Invalid credentials.' });

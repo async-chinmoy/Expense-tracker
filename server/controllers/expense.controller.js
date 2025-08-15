@@ -1,4 +1,5 @@
 import Expenses from "../models/expense.model.js";
+import User from "../models/user.model.js";
 
 export const getExpenses = async (req, res) => {
   const { category, startDate, endDate } = req.query;
@@ -48,9 +49,16 @@ export const createExpense = async (req, res) => {
       description,
       date: date ? new Date(date) : undefined,
     });
+    const user = await User.findById(req.user.id);
+    user.expenses.push(expense._id); 
+
+    await user.save();
 
     const saved = await expense.save();
-    res.status(201).json(saved);
+    return res.status(201).json({
+      message: 'Expense added successfully.',
+      expense: expense,
+    });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }

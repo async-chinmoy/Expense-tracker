@@ -20,6 +20,12 @@ const userSchema = new Schema(
       required: true,
       minlength: 6,
     },
+    expenses: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Expenses',
+      },
+    ],
   },
   {
     timestamps: true,
